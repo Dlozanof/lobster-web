@@ -1,0 +1,23 @@
+{{ $img_path := .Get "img" }}
+
+<style>
+    #callout {
+      background: #26087700;
+      border-radius: 10px;
+      display: grid;
+      align-items: flex-end; 
+      grid-template-columns: 1fr 100px;
+      column-gap: 15px;
+      padding: 10px;
+    }
+    #callout-inner {
+        text-align: right;
+    } 
+
+  </style>
+  <div id="callout">
+        <div id="callout-inner">
+            {{ .Get "text" }}
+        </div>
+        <img class="not-prose" src="{{ $img_path }}" width="{{ 100 }}">
+</div>

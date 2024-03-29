@@ -1,0 +1,58 @@
+{{- $u := urls.Parse .Destination -}}
+{{- $alt := plainify .Text -}}
+{{- $title := plainify .Title -}}
+{{- $img := "" -}}
+
+{{- if $u.IsAbs -}}
+  {{- with resources.GetRemote $u.String -}}
+    {{- with .Err -}}
+      {{- errorf "%s" -}}
+    {{- else -}}
+      {{- $img = . -}}
+    {{- end -}}
+  {{- else -}}
+    {{- errorf "Unable to get remote image" -}}
+  {{- end -}}
+{{- else -}}
+  {{- with .Page.Resources.GetMatch $u.Path -}}
+    {{- $img = . -}}
+  {{- else -}}
+    {{- errorf "Unable to get local image" -}}
+  {{- end -}}
+{{- end -}}
+
+{{- with $img -}}
+  {{ $q := $u.Query }}
+  {{ $width := $q.Get "w" }}
+  {{ $height := $q.Get "h" }}
+  {{ $text := $q.Get "t" }}
+  <style>
+    .container {
+    display: grid;
+    align-items: center; 
+    grid-template-columns: 1fr 1fr 1fr;
+    column-gap: 5px;
+    }
+
+    img {
+      max-width: 100%;
+      max-height:100%;
+    }
+
+    .text {
+      font-size: 15px;
+    }
+  </style>
+
+  <div class="container">
+    <div class="text">
+      <p>{{ $text }}</p>
+    </div>
+    <div class="image">
+      <img src="{{ .RelPermalink }}" width="{{ $width }}" height="{{ $height }}"
+      {{- with $alt }} alt="{{ . }}" {{- end -}}
+      {{- with $title }} title="{{ . }}" {{- end -}}
+    >
+    </div>
+  </div>
+{{- end -}}
